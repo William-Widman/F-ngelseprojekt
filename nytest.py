@@ -117,8 +117,8 @@ class Labyrint:
                 "nman": "Fällans rum",
                 "beskrivning": """
                 ╔════════════════════════════════════════════════════╗
-                ║ Golvet är fullt av fällor!                        ║
-                ║ Du måste hitta en säker väg genom rummet.         ║
+                ║ Golvet är fullt av fällor!                         ║
+                ║ Du måste hitta en säker väg genom rummet.          ║
                 ╚════════════════════════════════════════════════════╝
                 """,
                 "val": {
@@ -233,7 +233,7 @@ class Labyrint:
 
     def visa_slutresultat(self):
         self.rensa_skarm()
-        if self.nuvarande_rum == "utgång":
+        if self.nuvarnade_rum == "utgång":
             print("""
             ╔═══════════════════════════════╗
             ║    GRATTIS! Du klarade det!   ║

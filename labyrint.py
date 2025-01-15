@@ -1,75 +1,169 @@
+# Lägg in kommentarer i koden
+# Utöka antalet rum om du siktar mot C eller A
+#Flödeschema
+
 import random
+import os
+
 
 class Labyrint:
     def __init__(self):
         self.nuvarande_rum = "start"
-        self.max_drag = 20  # Antal drag innan spelet tar slut
+        self.max_drag = 20
         self.kvarvarande_drag = self.max_drag
         self.uppklarade_utmaningar = set()
+        self.minst_en_utmaning_klarad = False
+        self.rum = self.initiera_rum()
 
-        # Definiera rummen utan att referera till metoder ännu
-        self.rum = {
+def rensa_skarm(self):
+        """Rensar terminalfönstret för bättre läsbarhet"""
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+with open('readme.txt', 'r', encoding="utf-8") as file:  
+    data = file.read()  
+    print(data)
+
+    def visa_karta(self):
+        """Visar en enkel ASCII-karta över spelarens position"""
+        karta = {
+            "start": """
+            [*START*]---[GÅTA]
+               |           |
+            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[UTGÅNG]
+            """,
+            "gåta_rum": """
+            [Start]---[*GÅTA*]
+               |          |
+            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[UTGÅNG]
+            """,
+            "fälla_rum": """
+            [Start]---[GÅTA]
+               |         |
+            [*FÄLLA*]---[KORRIDOR 1]---[KORRIDOR 2]---[UTGÅNG]
+            """,
+            "korridor_1": """
+            [Start]---[GÅTA]
+               |         |
+            [FÄLLA]---[*KORRIDOR 1*]---[KORRIDOR 2]---[UTGÅNG]
+            """,
+            "korridor_2": """
+            [Start]---[GÅTA]
+               |         |
+            [FÄLLA]---[KORRIDOR 1]---[*KORRIDOR 2*]---[UTGÅNG]
+            """,
+            "utgång": """
+            [Start]---[GÅTA]
+               |         |
+            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[*UTGÅNG*]
+            """
+        }
+        print("\nDin position:")
+        print(karta.get(self.nuvarande_rum, karta["start"]))
+
+    def initiera_rum(self):
+        return {
             "start": {
-                "beskrivning": "Du står i ett mörkt rum med tre dörrar. Din tid är begränsad!",
+                "namn": "Startrum",
+                "beskrivning": """
+                ╔════════════════════════════════════════╗
+                ║ Du står i ett mörkt rum med tre dörrar ║
+                ║ Din tid är begränsad!                  ║
+                ╚════════════════════════════════════════╝
+                """,
                 "val": {
-                    "rakt fram": "korridor_1",
-                    "höger": "gåta_rum",
-                    "vänster": "fälla_rum"
+                    "rakt fram": ("fälla_rum", "Du går genom dörren rakt fram"),
+                    "vänster": ("gåta_rum", "Du tar dörren till vänster")
                 }
             },
             "korridor_1": {
-                "beskrivning": "En lång, smal korridor. Framför dig finns flera dörrar.",
+                "namn": "Korridor 1",
+                "beskrivning": """
+                ╔════════════════════════════════════════════════════╗
+                ║ En lång, smal korridor. Framför dig finns flera    ║
+                ║ dörrar. En skugga blockerar din väg!               ║
+                ╚════════════════════════════════════════════════════╝
+                """,
                 "val": {
-                    "höger": "kod_rum",
-                    "rakt fram": "korridor_2",
-                    "tillbaka": "start"
-                }
+                    "rakt fram": ("korridor_2", "Du fortsätter framåt"),
+                },
+                "utmaning": lambda: self.gåta_utmaning()
             },
             "korridor_2": {
-                "beskrivning": "En bred korridor med mörka väggar. En dörr skymtas framför dig.",
+                "namn": "Korridor 2",
+                "beskrivning": """
+                ╔════════════════════════════════════════════════════╗
+                ║ En bred korridor med mörka väggar. En dörr         ║
+                ║ skymtas framför dig, men en mekanism låser den!    ║
+                ╚════════════════════════════════════════════════════╝
+                """,
                 "val": {
-                    "rakt fram": "utgång",
-                    "tillbaka": "korridor_1"
-                }
+                    "rakt fram": ("utgång", "Du går mot utgången"),
+                    "tillbaka": ("korridor_1", "Du går tillbaka")
+                },
+                "utmaning": lambda: self.kod_utmaning()
             },
             "gåta_rum": {
-                "beskrivning": "Ett rum med en gammal staty som talar: 'Lös min gåta för att komma vidare.'",
-                "val": {"tillbaka": "start"}
+                "namn": "Gåtans rum",
+                "beskrivning": """
+                ╔════════════════════════════════════════════════════╗
+                ║ Ett rum med en gammal staty som talar:             ║
+                ║ 'Lös min gåta för att komma vidare.'               ║
+                ╚════════════════════════════════════════════════════╝
+                """,
+                "val": {
+                    "tillbaka": ("start", "Du går tillbaka"),
+                    "höger": ("korridor_1", "Du fortsätter frammåt")
+                },
+                "utmaning": lambda: self.gåta_utmaning()
             },
             "fälla_rum": {
-                "beskrivning": "Golvet är fullt av fällor! Du måste ta dig igenom utan att fastna.",
-                "val": {"tillbaka": "start"}
-            },
-            "kod_rum": {
-                "beskrivning": "Ett rum med ett låst kassaskåp. Du måste lösa koden.",
-                "val": {"tillbaka": "korridor_1"}
+                "namn": "Fällans rum",
+                "beskrivning": """
+                ╔════════════════════════════════════════════════════╗
+                ║ Golvet är fullt av fällor!                         ║
+                ║ Du måste hitta en säker väg genom rummet.          ║
+                ╚════════════════════════════════════════════════════╝
+                """,
+                "val": {
+                    "tillbaka": ("start", "Du går tillbaka")
+                },
+                "utmaning": lambda: self.falla_utmaning()
             },
             "utgång": {
-                "beskrivning": "GRATTIS! Du har hittat utgången och vunnit spelet!",
+                "namn": "Utgång",
+                "beskrivning": """
+                ╔════════════════════════════════════════════════════╗
+                ║ GRATTIS! Du har hittat utgången och vunnit spelet! ║
+                ╚════════════════════════════════════════════════════╝
+                """,
                 "val": {}
             }
         }
 
-        # Tilldela utmaningsfunktionerna efteråt
-        self.rum["gåta_rum"]["utmaning"] = self.gata_utmaning
-        self.rum["fälla_rum"]["utmaning"] = self.falla_utmaning
-        self.rum["kod_rum"]["utmaning"] = self.kod_utmaning
-
-        self.uppklarade_utmaningar = set()
-
     def visa_rum(self):
+        self.rensa_skarm()
         rum = self.rum[self.nuvarande_rum]
-        print(f"\n{rum['beskrivning']}")
-        print("\nDu kan gå:")
-        for riktning in rum["val"]:
-            print(f"- {riktning}")
+        print(f"\n{rum['namn'].upper()}")
+        print(rum['beskrivning'])
+        self.visa_karta()
+        print("\nTillgängliga vägar:")
+        for riktning, (_, beskrivning) in rum["val"].items():
+            print(f"► {riktning.capitalize()}: {beskrivning}")
+        print(f"\nDrag kvar: {self.kvarvarande_drag}")
 
     def flytta(self, riktning):
-        if riktning in self.rum[self.nuvarande_rum]["val"]:
-            self.nuvarande_rum = self.rum[self.nuvarande_rum]["val"][riktning]
+        rum = self.rum[self.nuvarande_rum]
+        if riktning in rum["val"]:
+            nasta_rum, meddelande = rum["val"][riktning]
+            print(f"\n{meddelande}")
+            input("\nTryck ENTER för att fortsätta...")
+            self.nuvarande_rum = nasta_rum
             self.kvarvarande_drag -= 1
+            return True
         else:
-            print("\nDet går inte att gå åt det hållet!")
+            print("\n❌ Det går inte att gå åt det hållet!")
+            input("\nTryck ENTER för att fortsätta...")
+            return False
 
     def kontrollera_utmaning(self):
         rum = self.rum[self.nuvarande_rum]
@@ -79,21 +173,21 @@ class Labyrint:
             if om_utmaning_klarad:
                 print("\nUtmaningen är klarad! En ny väg öppnas.")
                 self.uppklarade_utmaningar.add(self.nuvarande_rum)
-                if self.nuvarande_rum == "gåta_rum":
-                    self.rum["gåta_rum"]["val"]["rakt fram"] = "korridor_1"
-                elif self.nuvarande_rum == "fälla_rum":
-                    self.rum["fälla_rum"]["val"]["rakt fram"] = "korridor_1"
-                elif self.nuvarande_rum == "kod_rum":
-                    self.rum["kod_rum"]["val"]["rakt fram"] = "korridor_2"
+                self.minst_en_utmaning_klarad = True
             else:
                 print("\nDu misslyckades med utmaningen och förlorade ett drag.")
                 self.kvarvarande_drag -= 1
                 self.nuvarande_rum = "start"
 
-    def gata_utmaning(self):
+    def gåta_utmaning(self):
         print("\nGåtan är: 'Vad har nycklar men inga lås, utrymmen men inga rum, och du kan bära det med dig?'")
         svar = input("Ditt svar: ").lower()
         return svar == "keyboard" or svar == "tangentbord"
+    
+    def korridor_1(self):
+        print("\nGåtan är: 'Vad blir blötare ju mer du torkar med den?'")
+        svar = input("Ditt svar: ").lower()
+        return svar == "handduk"
 
     def falla_utmaning(self):
         print("\nDu måste navigera genom fällorna! Välj en siffra mellan 1 och 3.")
@@ -102,55 +196,66 @@ class Labyrint:
         return val == korrekt_val
 
     def kod_utmaning(self):
-        print("\nEn gammal stenpelare står i rummet. På den finns ett pussel ingraverat:")
-
-        # Skapa ett slumpmässigt matematiskt pussel
+        print("\nEtt matematiskt pussel visas framför dig:")
         tal1 = random.randint(1, 10)
         tal2 = random.randint(1, 10)
         operator = random.choice(["+", "-", "*"])
 
-        # Beräkna det korrekta svaret
         if operator == "+":
             korrekt_svar = tal1 + tal2
         elif operator == "-":
             korrekt_svar = tal1 - tal2
-        else:  # Multiplikation
+        else:
             korrekt_svar = tal1 * tal2
 
         print(f"Vad är {tal1} {operator} {tal2}?")
-
-        # Ge spelaren 2 försök att svara
         for _ in range(2):
             try:
                 gissning = int(input("Ditt svar: "))
                 if gissning == korrekt_svar:
-                    print("\nStenpelaren skakar och en hemlig dörr öppnas!")
+                    print("\nRätt svar! En väg öppnas.")
                     return True
                 else:
                     print("Fel svar! Försök igen.")
             except ValueError:
                 print("Du måste skriva en siffra.")
-
-        print(f"\nDu misslyckades med pusslet. Det korrekta svaret var {korrekt_svar}.")
         return False
 
-
-
     def spela(self):
-        print("Välkommen till labyrinten! Hitta ut innan dina drag tar slut.")
-        while self.nuvarande_rum != "utgång" and self.kvarvarande_drag > 0:
-            print(f"\nDrag kvar: {self.kvarvarande_drag}")
-            self.visa_rum()
-            self.kontrollera_utmaning()
-            val = input("\nVilken riktning vill du gå? ").lower()
-            self.flytta(val)
-        
-        if self.nuvarande_rum == "utgång":
-            print("\nDu klarade labyrinten! Grattis!")
-        else:
-            print("\nTiden tog slut! Du fastnade i labyrinten...")
+        self.rensa_skarm()
+        print("""
+        ╔═══════════════════════════════════════╗
+        ║      Välkommen till Labyrinten!       ║
+        ║  Hitta utgången innan tiden tar slut  ║
+        ╚═══════════════════════════════════════╝
+        """)
+        input("Tryck ENTER för att börja...")
 
+        while self.nuvarande_rum != "utgång" and self.kvarvarande_drag > 0:
+            self.visa_rum()
+            if self.nuvarande_rum in self.rum and "utmaning" in self.rum[self.nuvarande_rum]:
+                self.kontrollera_utmaning()
+            val = input("\nVilken väg väljer du? ").lower()
+            self.flytta(val)
+
+        self.visa_slutresultat()
+
+    def visa_slutresultat(self):
+        self.rensa_skarm()
+        if self.nuvarande_rum == "utgång":
+            print("""
+            ╔═══════════════════════════════╗
+            ║    GRATTIS! Du klarade det!   ║
+            ╚═══════════════════════════════╝
+            """)
+        else:
+            print("""
+            ╔═══════════════════════════════╗
+            ║  Tiden tog slut! Game Over!   ║
+            ╚═══════════════════════════════╝
+            """)
 
 # Starta spelet
-labyrint = Labyrint()
-labyrint.spela()
+if __name__ == "__main__":
+    labyrint = Labyrint()
+    labyrint.spela()
