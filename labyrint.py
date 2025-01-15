@@ -15,13 +15,14 @@ class Labyrint:
         self.minst_en_utmaning_klarad = False
         self.rum = self.initiera_rum()
 
-def rensa_skarm(self):
+    def rensa_skarm(self):
         """Rensar terminalfönstret för bättre läsbarhet"""
-        os.system('cls' if os.name == 'nt' else 'clear')
+        os.system('cls' if os.name == 'nt' else 'clear') 
 
-with open('readme.txt', 'r', encoding="utf-8") as file:  
-    data = file.read()  
-    print(data)
+    def spelinstruktioner(self):
+        with open('readme.txt', 'r', encoding="utf-8") as file:  
+            data = file.read()  
+            print(data) 
 
     def visa_karta(self):
         """Visar en enkel ASCII-karta över spelarens position"""
@@ -140,6 +141,20 @@ with open('readme.txt', 'r', encoding="utf-8") as file:
             }
         }
 
+    def spela(self):
+        self.rensa_skarm()
+        self.spelinstruktioner()  # Visa instruktionerna en gång i början
+        input("\nTryck ENTER för att börja spelet...")
+
+        while self.nuvarande_rum != "utgång" and self.kvarvarande_drag > 0:
+            self.visa_rum()
+        if self.nuvarande_rum in self.rum and "utmaning" in self.rum[self.nuvarande_rum]:
+            self.kontrollera_utmaning()
+        val = input("\nVilken väg väljer du? ").lower()
+        self.flytta(val)
+
+        self.visa_slutresultat()
+
     def visa_rum(self):
         self.rensa_skarm()
         rum = self.rum[self.nuvarande_rum]
@@ -164,6 +179,8 @@ with open('readme.txt', 'r', encoding="utf-8") as file:
             print("\n❌ Det går inte att gå åt det hållet!")
             input("\nTryck ENTER för att fortsätta...")
             return False
+
+
 
     def kontrollera_utmaning(self):
         rum = self.rum[self.nuvarande_rum]
