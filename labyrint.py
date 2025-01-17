@@ -30,9 +30,11 @@ class Labyrint:
             "start": """
             [*START*]---[GÅTA]
                |           |
-            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[UTGÅNG]
-            """,
-            "gåta_rum": """
+            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]
+               |                           |             
+                                       [UTGÅNG] """,                           
+                                        
+            "gåta_rum": """             
             [Start]---[*GÅTA*]
                |          |
             [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[UTGÅNG]
@@ -85,7 +87,7 @@ class Labyrint:
                 ╚════════════════════════════════════════════════════╝
                 """,
                 "val": {
-                    "rakt fram": ("korridor_2", "Du fortsätter framåt"),
+                    "vänster": ("korridor_2", "Du fortsätter framåt"),
                 },
                 "utmaning": lambda: self.gåta_utmaning()
             },
