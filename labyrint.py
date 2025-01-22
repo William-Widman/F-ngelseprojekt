@@ -6,6 +6,13 @@ import random
 import os
 
 
+
+with open('readme.txt', 'r', encoding="utf-8") as file:  
+            data = file.read()  
+            print(data)
+
+input("Tryck på enter för att fortsätta")
+
 class Labyrint:
     def __init__(self):
         self.nuvarande_rum = "start"
@@ -19,45 +26,57 @@ class Labyrint:
         """Rensar terminalfönstret för bättre läsbarhet"""
         os.system('cls' if os.name == 'nt' else 'clear') 
 
-    def spelinstruktioner(self):
-        with open('readme.txt', 'r', encoding="utf-8") as file:  
-            data = file.read()  
-            print(data) 
-
     def visa_karta(self):
         """Visar en enkel ASCII-karta över spelarens position"""
         karta = {
             "start": """
             [*START*]---[GÅTA]
                |           |
-            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]
-               |                           |             
-                                       [UTGÅNG] """,                           
+            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
+                                                      |
+                                                   [UTGÅNG] """,                           
                                         
             "gåta_rum": """             
             [Start]---[*GÅTA*]
-               |          |
-            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[UTGÅNG]
+               |         |
+            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
+                                                       |
+                                                    [UTGÅNG]
             """,
             "fälla_rum": """
             [Start]---[GÅTA]
                |         |
-            [*FÄLLA*]---[KORRIDOR 1]---[KORRIDOR 2]---[UTGÅNG]
+            [*FÄLLA*]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
+                                                       |
+                                                    [UTGÅNG]
             """,
             "korridor_1": """
             [Start]---[GÅTA]
                |         |
-            [FÄLLA]---[*KORRIDOR 1*]---[KORRIDOR 2]---[UTGÅNG]
+            [FÄLLA]---[*KORRIDOR 1*]---[KORRIDOR 2]---[rum]
+                                                       |
+                                                    [UTGÅNG]
             """,
             "korridor_2": """
             [Start]---[GÅTA]
                |         |
-            [FÄLLA]---[KORRIDOR 1]---[*KORRIDOR 2*]---[UTGÅNG]
+            [FÄLLA]---[KORRIDOR 1]---[*KORRIDOR 2*]---[rum]
+                                                       |
+                                                    [UTGÅNG]
+            """,
+            "rum": """
+            [Start]---[GÅTA]
+               |         |
+            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[*rum*]
+                                                       |
+                                                    [UTGÅNG]
             """,
             "utgång": """
             [Start]---[GÅTA]
                |         |
-            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[*UTGÅNG*]
+            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
+                                                       |
+                                                    [*UTGÅNG*]
             """
         }
         print("\nDin position:")
@@ -74,8 +93,8 @@ class Labyrint:
                 ╚════════════════════════════════════════╝
                 """,
                 "val": {
-                    "rakt fram": ("fälla_rum", "Du går genom dörren rakt fram"),
-                    "vänster": ("gåta_rum", "Du tar dörren till vänster")
+                    "rakt fram": ("fälla_rum", "Du går genom dörren rakt fram."),
+                    "vänster": ("gåta_rum", "Du tar dörren till vänster.")
                 }
             },
             "korridor_1": {
@@ -87,9 +106,9 @@ class Labyrint:
                 ╚════════════════════════════════════════════════════╝
                 """,
                 "val": {
-                    "vänster": ("korridor_2", "Du fortsätter framåt"),
+                    "vänster": ("korridor_2", "Du fortsätter framåt."),
                 },
-                "utmaning": lambda: self.gåta_utmaning()
+                "utmaning": lambda: self.korridor_1()
             },
             "korridor_2": {
                 "namn": "Korridor 2",
@@ -100,8 +119,8 @@ class Labyrint:
                 ╚════════════════════════════════════════════════════╝
                 """,
                 "val": {
-                    "rakt fram": ("utgång", "Du går mot utgången"),
-                    "tillbaka": ("korridor_1", "Du går tillbaka")
+                    "rakt fram": ("rum", "Du fortsätter mot utgången."),
+                    "tillbaka": ("korridor_1", "Du går tillbaka.")
                 },
                 "utmaning": lambda: self.kod_utmaning()
             },
@@ -114,8 +133,8 @@ class Labyrint:
                 ╚════════════════════════════════════════════════════╝
                 """,
                 "val": {
-                    "tillbaka": ("start", "Du går tillbaka"),
-                    "höger": ("korridor_1", "Du fortsätter frammåt")
+                    "tillbaka": ("start", "Du går tillbaka."),
+                    "höger": ("korridor_1", "Du fortsätter frammåt.")
                 },
                 "utmaning": lambda: self.gåta_utmaning()
             },
@@ -128,10 +147,23 @@ class Labyrint:
                 ╚════════════════════════════════════════════════════╝
                 """,
                 "val": {
-                    "tillbaka": ("start", "Du går tillbaka")
+                    "tillbaka": ("start", "Du går tillbaka."),
                 },
                 "utmaning": lambda: self.falla_utmaning()
             },
+            "rum": {
+                "namn": "rum",
+                "beskrivning":"""
+                ╔════════════════════════════════════════════════════╗
+                ║ Du ser ljuset runt hörnet, inte långt kvar nu!     ║
+                ╚════════════════════════════════════════════════════╝
+                """,
+                "val": {
+                    "tillbaka": ("korridor_2", "Du går tillbaka."),
+                    "höger": ("utgång", "Du går mot utgången.")
+                },
+            },
+            
             "utgång": {
                 "namn": "Utgång",
                 "beskrivning": """
@@ -145,7 +177,6 @@ class Labyrint:
 
     def spela(self):
         self.rensa_skarm()
-        self.spelinstruktioner()  # Visa instruktionerna en gång i början
         input("\nTryck ENTER för att börja spelet...")
 
         while self.nuvarande_rum != "utgång" and self.kvarvarande_drag > 0:
@@ -197,6 +228,7 @@ class Labyrint:
                 print("\nDu misslyckades med utmaningen och förlorade ett drag.")
                 self.kvarvarande_drag -= 1
                 self.nuvarande_rum = "start"
+                
 
     def gåta_utmaning(self):
         print("\nGåtan är: 'Vad har nycklar men inga lås, utrymmen men inga rum, och du kan bära det med dig?'")
