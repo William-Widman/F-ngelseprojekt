@@ -1,5 +1,3 @@
-# Lägg in kommentarer i koden
-# Utöka antalet rum om du siktar mot C eller A
 # Flödeschema
 
 
@@ -100,7 +98,7 @@ class Labyrint:
                 "namn": "Startrum",
                 "beskrivning": """
                 ╔════════════════════════════════════════╗
-                ║ Du står i ett mörkt rum med tre dörrar ║
+                ║ Du står i ett mörkt rum med två dörrar ║
                 ║ Din tid är begränsad!                  ║
                 ╚════════════════════════════════════════╝
                 """,
@@ -113,8 +111,8 @@ class Labyrint:
                 "namn": "Korridor 1",
                 "beskrivning": """
                 ╔════════════════════════════════════════════════════╗
-                ║ En lång, smal korridor. Framför dig finns flera    ║
-                ║ dörrar. En skugga blockerar din väg!               ║
+                ║ En lång, smal korridor. Svara på gåtan så får      ║
+                ║ du fortsätta på din väg.                           ║
                 ╚════════════════════════════════════════════════════╝
                 """,
                 "val": {
@@ -341,7 +339,7 @@ class Labyrint:
         print("""
         ╔═══════════════════════════════════════╗
         ║      Välkommen till Labyrinten!       ║
-        ║  Hitta utgången innan tiden tar slut  ║
+        ║  Hitta utgången innan tiden tar slut. ║
         ╚═══════════════════════════════════════╝
         """)
         input("Tryck ENTER för att börja...")
