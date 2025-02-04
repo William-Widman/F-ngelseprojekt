@@ -1,3 +1,0 @@
-variabel_1: Hej här är jag den första variabeln!
-variabel_2: 42
-variabel_3: True

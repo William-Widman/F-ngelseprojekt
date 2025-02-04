@@ -11,7 +11,7 @@ with open('readme.txt', 'r', encoding="utf-8") as file:
             data = file.read()  
             print(data)
 
-input("Tryck på enter för att fortsätta") # Väntar på att spelaren ska läsa texten
+input("Tryck på ENTER för att fortsätta") # Väntar på att spelaren ska läsa texten
 
 
 # Klass för att hantera labyrintspelet
@@ -35,57 +35,57 @@ class Labyrint:
             [*START*]---[GÅTA]
                |           |
             [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                                          |           |
-                                     [korridor 3]---[UTGÅNG] """,                           
+                           |              |           |
+                        [rum 2]---[korridor 3]---[UTGÅNG] """,                           
                                         
             "gåta_rum": """             
             [START]---[*GÅTA*]
                |           |
             [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                                          |           |
-                                     [korridor 3]---[UTGÅNG]
+                           |               |          |
+                         [rum 2]---[korridor 3]---[UTGÅNG]
             """,
             "fälla_rum": """
             [START]---[GÅTA]
                |           |
             [*FÄLLA*]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                                            |           |
-                                       [korridor 3]---[UTGÅNG]
+                            |              |           |
+                        [rum 2]---[korridor 3]---[UTGÅNG]
             """,
             "korridor_1": """
             [START]---[GÅTA]
                |           |
             [FÄLLA]---[*KORRIDOR 1*]---[KORRIDOR 2]---[rum]
-                                           |             |
-                                       [korridor 3]---[UTGÅNG]
+                            |             |             |
+                          [rum 2]---[korridor 3]---[UTGÅNG]
+            """,
+            "rum 2": """
+            [START]---[GÅTA]
+               |           |
+            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
+                            |             |           |
+                         [*rum 2*]---[korridor 3]---[UTGÅNG]
             """,
             "korridor_2": """
             [START]---[GÅTA]
                |           |
             [FÄLLA]---[KORRIDOR 1]---[*KORRIDOR 2*]---[rum]
-                                          |           |
-                                    [korridor 3]---[UTGÅNG]
+                           |              |           |
+                        [rum 2]---[korridor 3]---[UTGÅNG]
             """,
             "korridor_3": """
             [START]---[GÅTA]
                |           |
             [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                                          |           |
-                                   [*korridor 3*]---[UTGÅNG]
-            """,
-            "rum": """
-            [START]---[GÅTA]
-               |           |
-            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[*rum*]
-                                          |           |
-                                     [korridor 3]---[UTGÅNG]
+                            |              |           |
+                         [rum 2]---[*korridor 3*]---[UTGÅNG]
             """,
             "utgång": """
             [START]---[GÅTA]
                |           |
             [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                                          |           |
-                                     [korridor 3]---[*UTGÅNG*]
+                            |              |           |
+                         [rum 2]---[korridor 3]---[*UTGÅNG*]
             """
         }
         print("\nDin position:")
@@ -117,6 +117,7 @@ class Labyrint:
                 """,
                 "val": {
                     "vänster": ("korridor_2", "Du fortsätter framåt."),
+                    "rakt fram": ("rum_2", "Du fortsätter till nästa rum.")
                 },
                 "utmaning": lambda: self.korridor_1()
             },
@@ -190,7 +191,18 @@ class Labyrint:
                     "höger": ("utgång", "Du går mot utgången.")
                 },
             },
-            
+            "rum_2": {
+                "namn": "rum 2",
+                "beskrivning":"""
+                ╔════════════════════════════════════════════════════╗
+                ║ Du kommer till ett tomt rum och kan andas lite.    ║
+                ╚════════════════════════════════════════════════════╝
+                """,
+                "val": {
+                    "tillbaka": ("Korridor: 1", "Du går tillbaka"),
+                    "vänster": ("Korridor 3", "Du går till nästa utmaning.")
+                },
+            },
             "utgång": {
                 "namn": "Utgång",
                 "beskrivning": """
@@ -204,7 +216,9 @@ class Labyrint:
 
     def spela(self):
         self.rensa_skarm()
-        input("\nTryck ENTER för att börja spelet...")
+        print("\nTryck ENTER för att börja spelet...")
+        print("Tryck 1 fr att avsluta spelet")
+        
 
         while self.nuvarande_rum != "utgång" and self.kvarvarande_drag > 0:
             self.visa_rum() # Visar aktuellt rum
@@ -256,7 +270,7 @@ class Labyrint:
                 self.kvarvarande_drag -= 1
                 self.nuvarande_rum = "start"
                 
-    # Exempel på utmaningar
+    # Utmaningar
     def gåta_utmaning(self):
         print("\nGåtan är: 'Vad har nycklar men inga lås, och du kan bära det med dig?'")
         svar = input("Ditt svar: ").lower()
@@ -342,7 +356,12 @@ class Labyrint:
         ║  Hitta utgången innan tiden tar slut. ║
         ╚═══════════════════════════════════════╝
         """)
-        input("Tryck ENTER för att börja...")
+        print("Tryck ENTER för att börja")
+        print("Tryck 1 föra att avsluta spelet")
+        val = input("Ditt svar: ")
+        if val == "1":
+            print("Spelet avslutas...")
+            return #Avslutar funktionen och därmed spelet
 
         while self.nuvarande_rum != "utgång" and self.kvarvarande_drag > 0:
             self.visa_rum()

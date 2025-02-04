@@ -9,7 +9,7 @@ Det här är ett textbaserat äventyrsspel där du måste navigera genom en laby
 ## Spelregler
 1. **Mål:** Hitta utgången genom att navigera mellan rum i labyrinten.
 2. **Drag:** Du har **15 drag** på dig att klara spelet.
-3. **Utmaningar:** Vissa rum och korridorer är blockerade av utmaningar som måste klaras för att gå vidare.
+3. **Utmaningar:** Många rum och korridorer är blockerade av utmaningar som måste klaras för att gå vidare.
 4. **Om du misslyckas:** Du förlorar ett drag och skickas tillbaka till start.
 
 ---
