@@ -1,4 +1,3 @@
-# Flödeschema
 
 
 import time
@@ -11,7 +10,7 @@ with open('readme.txt', 'r', encoding="utf-8") as file:
             data = file.read()  
             print(data)
 
-input("Tryck på ENTER för att fortsätta") # Väntar på att spelaren ska läsa texten
+input("Tryck på enter för att fortsätta") # Väntar på att spelaren ska läsa texten
 
 
 # Klass för att hantera labyrintspelet
@@ -23,11 +22,9 @@ class Labyrint:
         self.uppklarade_utmaningar = set()
         self.minst_en_utmaning_klarad = False
         self.rum = self.initiera_rum()
-
     def rensa_skarm(self):
         #Rensar terminalfönstret för bättre läsbarhet
         os.system('cls' if os.name == 'nt' else 'clear') 
-
     def visa_karta(self):
         """Visar en enkel ASCII-karta över spelarens position"""
         karta = { # Kartor baserade på spelarens nuvarande rum
@@ -35,62 +32,62 @@ class Labyrint:
             [*START*]---[GÅTA]
                |           |
             [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                           |              |           |
-                        [rum 2]---[korridor 3]---[UTGÅNG] """,                           
+                                          |           |
+                                     [korridor 3]---[UTGÅNG] """,                           
                                         
             "gåta_rum": """             
             [START]---[*GÅTA*]
                |           |
             [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                           |               |          |
-                         [rum 2]---[korridor 3]---[UTGÅNG]
+                                          |           |
+                                     [korridor 3]---[UTGÅNG]
             """,
             "fälla_rum": """
             [START]---[GÅTA]
                |           |
             [*FÄLLA*]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                            |              |           |
-                        [rum 2]---[korridor 3]---[UTGÅNG]
+                                            |           |
+                                       [korridor 3]---[UTGÅNG]
             """,
             "korridor_1": """
             [START]---[GÅTA]
                |           |
             [FÄLLA]---[*KORRIDOR 1*]---[KORRIDOR 2]---[rum]
-                            |             |             |
-                          [rum 2]---[korridor 3]---[UTGÅNG]
-            """,
-            "rum 2": """
-            [START]---[GÅTA]
-               |           |
-            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                            |             |           |
-                         [*rum 2*]---[korridor 3]---[UTGÅNG]
+                                           |             |
+                                       [korridor 3]---[UTGÅNG]
             """,
             "korridor_2": """
             [START]---[GÅTA]
                |           |
             [FÄLLA]---[KORRIDOR 1]---[*KORRIDOR 2*]---[rum]
-                           |              |           |
-                        [rum 2]---[korridor 3]---[UTGÅNG]
+                                          |           |
+                                    [korridor 3]---[UTGÅNG]
             """,
             "korridor_3": """
             [START]---[GÅTA]
                |           |
             [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                            |              |           |
-                         [rum 2]---[*korridor 3*]---[UTGÅNG]
+                                          |           |
+                                   [*korridor 3*]---[UTGÅNG]
+            """,
+            "rum": """
+            [START]---[GÅTA]
+               |           |
+            [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[*rum*]
+                                          |           |
+                                     [korridor 3]---[UTGÅNG]
             """,
             "utgång": """
             [START]---[GÅTA]
                |           |
             [FÄLLA]---[KORRIDOR 1]---[KORRIDOR 2]---[rum]
-                            |              |           |
-                         [rum 2]---[korridor 3]---[*UTGÅNG*]
+                                          |           |
+                                     [korridor 3]---[*UTGÅNG*]
             """
         }
         print("\nDin position:")
         print(karta.get(self.nuvarande_rum, karta["start"]))
-
+    
     def initiera_rum(self):
         return {
              # Varje rum har ett namn, en beskrivning, möjliga val och ibland en utmaning
@@ -117,7 +114,6 @@ class Labyrint:
                 """,
                 "val": {
                     "vänster": ("korridor_2", "Du fortsätter framåt."),
-                    "rakt fram": ("rum_2", "Du fortsätter till nästa rum.")
                 },
                 "utmaning": lambda: self.korridor_1()
             },
@@ -136,12 +132,11 @@ class Labyrint:
                 },
                 "utmaning": lambda: self.kod_utmaning()
             },
-
             "korridor_3": {
                 "namn": "korridor_3",
                 "beskrivning": """
                 ╔════════════════════════════════════════════════════╗
-                ║  Den sissta utmaningen innan du tar dig ut!        ║
+                ║ Den sissta utmaningen innan du tar dig ut!         ║
                 ║ Lös min sissta gåta.                               ║
                 ╚════════════════════════════════════════════════════╝
                 """,
@@ -191,18 +186,7 @@ class Labyrint:
                     "höger": ("utgång", "Du går mot utgången.")
                 },
             },
-            "rum_2": {
-                "namn": "rum 2",
-                "beskrivning":"""
-                ╔════════════════════════════════════════════════════╗
-                ║ Du kommer till ett tomt rum och kan andas lite.    ║
-                ╚════════════════════════════════════════════════════╝
-                """,
-                "val": {
-                    "tillbaka": ("Korridor: 1", "Du går tillbaka"),
-                    "vänster": ("Korridor 3", "Du går till nästa utmaning.")
-                },
-            },
+            
             "utgång": {
                 "namn": "Utgång",
                 "beskrivning": """
@@ -213,22 +197,20 @@ class Labyrint:
                 "val": {}
             }
         }
-
     def spela(self):
         self.rensa_skarm()
         print("\nTryck ENTER för att börja spelet...")
-        print("Tryck 1 fr att avsluta spelet")
+        print("Tryck 1 för att avsluta spelet")
         
-
         while self.nuvarande_rum != "utgång" and self.kvarvarande_drag > 0:
             self.visa_rum() # Visar aktuellt rum
         if self.nuvarande_rum in self.rum and "utmaning" in self.rum[self.nuvarande_rum]:
             self.kontrollera_utmaning() # Hanterar utmaningar om de finns
         val = input("\nVilken väg väljer du? ").lower()
         self.flytta(val)    # Flyttar spelaren till nästa rum baserat på valet
-
+        
         self.visa_slutresultat()
-
+    
     def visa_rum(self):
         self.rensa_skarm()
         rum = self.rum[self.nuvarande_rum]
@@ -239,7 +221,7 @@ class Labyrint:
         for riktning, (_, beskrivning) in rum["val"].items():
             print(f"► {riktning.capitalize()}: {beskrivning}")
         print(f"\nDrag kvar: {self.kvarvarande_drag}")
-
+    
     def flytta(self, riktning):
         rum = self.rum[self.nuvarande_rum]
         if riktning in rum["val"]:
@@ -253,9 +235,8 @@ class Labyrint:
             print("\n❌ Det går inte att gå åt det hållet!")
             input("\nTryck ENTER för att fortsätta...")
             return False
-
-
-
+    
+    
     def kontrollera_utmaning(self):
         rum = self.rum[self.nuvarande_rum]
         if "utmaning" in rum and self.nuvarande_rum not in self.uppklarade_utmaningar:
@@ -280,14 +261,13 @@ class Labyrint:
         print("\nGåtan är: 'Vad blir blötare ju mer du torkar med den?'")
         svar = input("Ditt svar: ").lower()
         return svar == "handduk"
-
+    
     def falla_utmaning(self):
         print("\nDu måste navigera genom fällorna! Välj en siffra mellan 1 och 2.")
         val = input("Ditt val: ")
         korrekt_val = str(random.randint(1, 2))
         return val == korrekt_val
     
-
     def tidsprovning(self):
         print("\nTiden är knapp! Du måste svara innan sanden rinner ut.")
         fråga = "Vad är två tredjedelar av 90?"
@@ -295,15 +275,15 @@ class Labyrint:
         total_tid = 15  # Total tid på 15 sekunder
         tid_reduktion = 5  # Tid som minskas för varje felaktigt svar
         start_tid = time.time()
-
+        
         print(f"\nFråga: {fråga}")
-
+        
         while total_tid > 0:
             kvarvarande_tid = total_tid - (time.time() - start_tid)
             if kvarvarande_tid <= 0:
                 print("\nTiden är slut! Sanden har runnit ut.")
                 return False  # Funktionen avslutas här
-
+            
             print(f"Du har {kvarvarande_tid:.1f} sekunder kvar.")
             try:
                 gissning = int(input("Ditt svar: "))
@@ -319,22 +299,20 @@ class Labyrint:
     
         print("\nTiden är slut! Tiden har runnit ut.")
         return False
-
     
-
     def kod_utmaning(self):
         print("\nEtt matematiskt pussel visas framför dig:")
         tal1 = random.randint(1, 10)
         tal2 = random.randint(1, 10)
         operator = random.choice(["+", "-", "*"])
-
+        
         if operator == "+":
             korrekt_svar = tal1 + tal2
         elif operator == "-":
             korrekt_svar = tal1 - tal2
         else:
             korrekt_svar = tal1 * tal2
-
+        
         print(f"Vad är {tal1} {operator} {tal2}?")
         for _ in range(2):
             try:
@@ -347,31 +325,30 @@ class Labyrint:
             except ValueError:
                 print("Du måste skriva en siffra.")
         return False
-
     def spela(self):
         self.rensa_skarm()
         print("""
         ╔═══════════════════════════════════════╗
         ║      Välkommen till Labyrinten!       ║
-        ║  Hitta utgången innan tiden tar slut. ║
+        ║  Hitta utgången innan tiden tar slut  ║
         ╚═══════════════════════════════════════╝
         """)
-        print("Tryck ENTER för att börja")
-        print("Tryck 1 föra att avsluta spelet")
+        print("Tryck ENTER för att börja...")
+        print("Tryck 1 för att avsluta spelet")
         val = input("Ditt svar: ")
-        if val == "1":
-            print("Spelet avslutas...")
-            return #Avslutar funktionen och därmed spelet
-
+        if val ==  "1":
+            print("spelet avslutas...")
+            return # Avslutar funktionen och därmed spelet
+        
         while self.nuvarande_rum != "utgång" and self.kvarvarande_drag > 0:
             self.visa_rum()
             if self.nuvarande_rum in self.rum and "utmaning" in self.rum[self.nuvarande_rum]:
                 self.kontrollera_utmaning()
             val = input("\nVilken väg väljer du? ").lower()
             self.flytta(val)
-
+        
         self.visa_slutresultat()
-
+    
     def visa_slutresultat(self):
         self.rensa_skarm()
         if self.nuvarande_rum == "utgång":
@@ -382,9 +359,9 @@ class Labyrint:
             """)
         else:
             print("""
-            ╔═══════════════════════════════╗
-            ║  Tiden tog slut! Game Over!   ║
-            ╚═══════════════════════════════╝
+            ╔══════════════════════════════════════╗
+            ║  Dina drag tog slut slut! Game Over! ║
+            ╚══════════════════════════════════════╝
             """)
 
 # Starta spelet
